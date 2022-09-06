@@ -1,17 +1,20 @@
 import React, {useEffect, useState} from 'react';
 import s from './App.module.scss';
-import Table from "./components/Table/Table";
+import Table, {IData} from "./components/Table/Table";
 import axios from "axios";
 
 const App = () => {
     const [query, setQuery] = useState<string>('');
-    const [data, setData] = useState([]);
+    const [data, setData] = useState<IData[]>([]);
 
     useEffect(() => {
         const fetchUsers = async () => {
-            const res = await axios.get(`http://localhost:5000?q=${query}`);
-            console.log(res)
-            setData(res.data);
+            try {
+                const res = await axios.get<IData[]>(`http://localhost:5000?q=${query}`);
+                setData(res.data);
+            } catch (e) {
+                console.error(e)
+            }
         };
 
         if (query.length === 0 || query.length > 2 ) {
